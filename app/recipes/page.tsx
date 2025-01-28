@@ -3,8 +3,16 @@
 import React, { useEffect, useState } from "react";
 import { getRecipes } from "@/services/recipes";
 
+interface Recipe {
+  id: number;
+  name: string;
+  image: string;
+  instructions: string[];
+  tags: string[];
+}
+
 export default function RecipesPage() {
-  const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   useEffect(() => {
     async function fetchRecipes() {
@@ -13,6 +21,14 @@ export default function RecipesPage() {
     }
     fetchRecipes();
   }, []);
+
+  const truncateInstructions = (instructions: string[], maxLength: number) => {
+    const joinedInstructions = instructions.join(" ");
+    if (joinedInstructions.length > maxLength) {
+      return joinedInstructions.substring(0, maxLength) + "...";
+    }
+    return joinedInstructions;
+  };
 
   return (
     <main className="flex flex-wrap justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -25,7 +41,7 @@ export default function RecipesPage() {
           <div className="px-6 py-4">
             <div className="font-bold text-xl mb-2">{recipe.name}</div>
             <p className="text-gray-700 text-base">
-              {recipe.instructions.join(" ")}
+              {truncateInstructions(recipe.instructions, 100)}
             </p>
           </div>
           <div className="px-6 pt-4 pb-2">
