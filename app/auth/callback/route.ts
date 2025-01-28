@@ -12,6 +12,7 @@ export async function GET(request: Request) {
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host");
       const isLocalEnv = process.env.NODE_ENV === "development";
+
       if (isLocalEnv) {
         return NextResponse.redirect(`${origin}${next}`);
       } else if (forwardedHost) {
@@ -21,5 +22,6 @@ export async function GET(request: Request) {
       }
     }
   }
+
   return NextResponse.redirect(`${origin}/auth/auth-code-error`);
 }
