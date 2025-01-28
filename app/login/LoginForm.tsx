@@ -73,7 +73,7 @@ export default function LoginForm() {
   const email = form.getValues("email");
 
   return (
-    <main className="flex justify-center items-center min-h-screen">
+    <main className="flex bg-black justify-center items-center min-h-screen">
       <Card className="w-[380px]">
         <CardHeader>
           <CardTitle>Login</CardTitle>
@@ -114,7 +114,7 @@ export default function LoginForm() {
               {serverError && (
                 <p className="text-red-500 text-sm mt-2">{serverError}</p>
               )}
-              {/* <Button type="submit">Register</Button> */}
+
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>

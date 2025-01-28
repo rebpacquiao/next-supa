@@ -18,14 +18,15 @@ export default async function Dashboard() {
   return (
     <>
       <div className="flex h-screen bg-gray-200">
-        <div className="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden"></div>
         <Sidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
           <AppBar position="static">
             <Toolbar>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                <MenuIcon />
-              </Typography>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1 }}
+              ></Typography>
               <Box display="flex" alignItems="center">
                 <Typography variant="body1" component="p" sx={{ mr: 2 }}>
                   Hello {data.user.email}

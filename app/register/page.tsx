@@ -72,7 +72,7 @@ export default function Register() {
   };
 
   return (
-    <main className="flex justify-center items-center min-h-screen">
+    <main className="flex  bg-black justify-center items-center min-h-screen">
       <Card className="w-[380px]">
         <CardHeader>
           <CardTitle>Register</CardTitle>
