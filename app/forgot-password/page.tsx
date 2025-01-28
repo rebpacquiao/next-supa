@@ -67,7 +67,7 @@ export default function ForgotPassword() {
     }
   };
   return (
-    <main className="flex bg-black justify-center items-center min-h-screen">
+    <main className="flex bg-custom-gradient justify-center items-center min-h-screen">
       <Card className="w-[380px]">
         <CardHeader>
           <CardTitle>Password Reset</CardTitle>
