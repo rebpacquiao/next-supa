@@ -26,12 +26,16 @@ import {
   CircularProgress,
   Backdrop,
   Stack,
+  IconButton,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   createTask,
   getTasks,
   searchPosts,
   updatePost,
+  deletePost,
 } from "../../services/task";
 import SearchComponent from "./SearchComponent";
 
@@ -56,6 +60,7 @@ export default function DashboardContent() {
   const [alertOpen, setAlertOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
+  const [deleteTask, setDeleteTask] = useState<Task | null>(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -88,6 +93,7 @@ export default function DashboardContent() {
       const newTask = await createTask(description);
       newTask.tags = tags;
       setTasks((prevTasks) => [newTask, ...prevTasks]);
+      console.log("Created new task:", newTask);
     }
     setOpen(false);
     setDescription("");
@@ -103,26 +109,44 @@ export default function DashboardContent() {
     setOpen(true);
   };
 
-  const initChangePage = (event: unknown, newPage: number) => {
+  const initDeleteTask = (task: Task) => {
+    setDeleteTask(task);
+  };
+
+  const confirmDeleteTask = async () => {
+    if (deleteTask) {
+      setLoading(true);
+      console.log("Deleting task with ID:", deleteTask.id);
+      await deletePost(deleteTask.id);
+      setTasks((prevTasks) =>
+        prevTasks.filter((task) => task.id !== deleteTask.id)
+      );
+      setDeleteTask(null);
+      setLoading(false);
+      setAlertOpen(true);
+    }
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const initChangeRowsPerPage = (
+  const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const initChangeTag = (event: SelectChangeEvent<string[]>) => {
+  const handleTagChange = (event: SelectChangeEvent<string[]>) => {
     setTags(event.target.value as string[]);
   };
 
-  const closeAlert = () => {
+  const handleAlertClose = () => {
     setAlertOpen(false);
   };
 
-  const initSearchTitle = async (query: string) => {
+  const handleSearch = async (query: string) => {
     setLoading(true);
     if (query) {
       try {
@@ -151,7 +175,7 @@ export default function DashboardContent() {
             </Button>
           </div>
 
-          <SearchComponent onSearch={initSearchTitle} />
+          <SearchComponent onSearch={handleSearch} />
 
           <div className="flex flex-col mt-8">
             <TableContainer component={Paper}>
@@ -177,7 +201,18 @@ export default function DashboardContent() {
                       </TableCell>
                       <TableCell>{task.views}</TableCell>
                       <TableCell>
-                        <Button onClick={() => initEditTask(task)}>Edit</Button>
+                        <IconButton
+                          color="primary"
+                          onClick={() => initEditTask(task)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          color="secondary"
+                          onClick={() => initDeleteTask(task)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -189,8 +224,8 @@ export default function DashboardContent() {
                 count={totalTasks}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onPageChange={initChangePage}
-                onRowsPerPageChange={initChangeRowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
               />
             </TableContainer>
           </div>
@@ -213,7 +248,7 @@ export default function DashboardContent() {
             <Select
               multiple
               value={tags}
-              onChange={initChangeTag}
+              onChange={handleTagChange}
               renderValue={(selected) => (
                 <div>
                   {(selected as string[]).map((value) => (
@@ -239,10 +274,24 @@ export default function DashboardContent() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog open={Boolean(deleteTask)} onClose={() => setDeleteTask(null)}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this post?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteTask(null)} color="primary">
+            No
+          </Button>
+          <Button onClick={confirmDeleteTask} color="secondary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Snackbar
         open={alertOpen}
         autoHideDuration={6000}
-        onClose={closeAlert}
+        onClose={handleAlertClose}
         message={
           editTask ? "Successfully updated post" : "Successfully created post"
         }

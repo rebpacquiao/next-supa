@@ -67,3 +67,13 @@ export const updatePost = async (id: number, title: string, tags: string[]) => {
     throw error;
   }
 };
+
+export const deletePost = async (id: number) => {
+  try {
+    const response = await axios.delete(`${API_URL}/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    throw error;
+  }
+};
