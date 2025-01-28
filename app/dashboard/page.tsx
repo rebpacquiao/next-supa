@@ -3,9 +3,6 @@ import { createClient } from "@/utils/supabase/server";
 import LogoutButton from "./LogoutButton";
 import Sidebar from "./Sidebar";
 import DashboardContent from "./DashboardContent";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 export default async function Dashboard() {
