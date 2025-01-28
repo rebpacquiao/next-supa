@@ -70,8 +70,8 @@ export default function ForgotPassword() {
     <main className="flex bg-custom-gradient justify-center items-center min-h-screen">
       <Card className="w-[380px]">
         <CardHeader>
-          <CardTitle>Password Reset</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-white text-2xl">Password Reset</CardTitle>
+          <CardDescription className="text-white text-sm">
             Enter your email address to reset your password
           </CardDescription>
         </CardHeader>
@@ -86,7 +86,7 @@ export default function ForgotPassword() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-white">Email</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -98,7 +98,11 @@ export default function ForgotPassword() {
                 <p className="text-red-500 text-sm mt-2">{serverError}</p>
               )}
               {/* <Button type="submit">Register</Button> */}
-              <Button type="submit" disabled={isLoading}>
+              <Button
+                className="bg-blue-500 hover:bg-blue-500"
+                type="submit"
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

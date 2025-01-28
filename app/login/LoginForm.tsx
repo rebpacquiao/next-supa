@@ -76,8 +76,9 @@ export default function LoginForm() {
     <main className="flex bg-custom-gradient justify-center items-center min-h-screen">
       <Card className="w-[380px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Login to your account</CardDescription>
+          <CardTitle className="text-white text-2xl">
+            Sign in to your account
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -90,9 +91,9 @@ export default function LoginForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-white">Email address</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className="text-white" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -103,9 +104,13 @@ export default function LoginForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="text-white">Password</FormLabel>
                     <FormControl>
-                      <Input {...field} type="password" />
+                      <Input
+                        {...field}
+                        type="password"
+                        className="text-white"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,7 +120,11 @@ export default function LoginForm() {
                 <p className="text-red-500 text-sm mt-2">{serverError}</p>
               )}
 
-              <Button type="submit" disabled={isLoading}>
+              <Button
+                className="bg-blue-500 hover:bg-blue-500"
+                type="submit"
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

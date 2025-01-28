@@ -6,7 +6,9 @@ export default function RegistrationConfirmation() {
     <main className="flex bg-custom-gradient justify-center items-center min-h-screen">
       <Card className="w-[540px] text-center">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Check Your Email</CardTitle>
+          <CardTitle className="text-2xl font-bold text-white">
+            Check Your Email
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex justify-center mb-6">

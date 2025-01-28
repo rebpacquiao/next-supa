@@ -75,8 +75,9 @@ export default function Register() {
     <main className="flex  bg-custom-gradient justify-center items-center min-h-screen">
       <Card className="w-[380px]">
         <CardHeader>
-          <CardTitle>Register</CardTitle>
-          <CardDescription>Register for a new account</CardDescription>
+          <CardTitle className="text-white text-2xl">
+            Create an account
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -89,9 +90,9 @@ export default function Register() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-white">Email</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className="text-white" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -102,9 +103,13 @@ export default function Register() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="text-white">Password</FormLabel>
                     <FormControl>
-                      <Input {...field} type="password" />
+                      <Input
+                        {...field}
+                        type="password"
+                        className="text-white"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,9 +120,15 @@ export default function Register() {
                 name="passwordConfirm"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password confirm</FormLabel>
+                    <FormLabel className="text-white">
+                      Password confirm
+                    </FormLabel>
                     <FormControl>
-                      <Input {...field} type="password" />
+                      <Input
+                        {...field}
+                        type="password"
+                        className="text-white"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -127,7 +138,11 @@ export default function Register() {
                 <p className="text-red-500 text-sm mt-2">{serverError}</p>
               )}
               {/* <Button type="submit">Register</Button> */}
-              <Button type="submit" disabled={isLoading}>
+              <Button
+                className="bg-blue-500 hover:bg-blue-500"
+                type="submit"
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
