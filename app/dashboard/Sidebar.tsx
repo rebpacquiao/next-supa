@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export default function Sidebar() {
   return (
@@ -32,7 +33,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="mt-10">
-        <a
+        <Link
           className="flex items-center px-6 py-2 mt-4 text-gray-100 bg-gray-700 bg-opacity-25"
           href="#"
         >
@@ -58,8 +59,8 @@ export default function Sidebar() {
           </svg>
 
           <span className="mx-3">Dashboard</span>
-        </a>
-        <a
+        </Link>
+        <Link
           className="flex items-center px-6 py-2 mt-4 text-gray-100 bg-gray-700 bg-opacity-25"
           href="/recipes"
         >
@@ -79,7 +80,7 @@ export default function Sidebar() {
           </svg>
 
           <span className="mx-3">Recipes</span>
-        </a>
+        </Link>
       </nav>
     </div>
   );
