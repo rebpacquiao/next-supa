@@ -21,18 +21,18 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useState, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { forgotPassword } from "./action";
+import { useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
 });
 
 export default function ForgotPassword() {
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [serverError, setServerError] = useState<string | null>(null);
@@ -41,7 +41,7 @@ export default function ForgotPassword() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: decodeURIComponent(searchParams.get("email") ?? ""),
+      email: "",
     },
   });
 
@@ -56,7 +56,6 @@ export default function ForgotPassword() {
 
       if (response.error) {
         setServerError(response.message);
-        // }
       } else {
         router.push("/forgot-password/confirmation");
       }
@@ -66,6 +65,36 @@ export default function ForgotPassword() {
       setIsLoading(false);
     }
   };
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ForgotPasswordForm
+        form={form}
+        handleSubmit={handleSubmit}
+        serverError={serverError}
+        isLoading={isLoading}
+      />
+    </Suspense>
+  );
+}
+
+function ForgotPasswordForm({
+  form,
+  handleSubmit,
+  serverError,
+  isLoading,
+}: {
+  form: ReturnType<typeof useForm<z.infer<typeof formSchema>>>;
+  handleSubmit: (data: z.infer<typeof formSchema>) => Promise<void>;
+  serverError: string | null;
+  isLoading: boolean;
+}) {
+  const searchParams = useSearchParams();
+
+  React.useEffect(() => {
+    form.setValue("email", decodeURIComponent(searchParams.get("email") ?? ""));
+  }, [searchParams, form]);
+
   return (
     <main className="flex bg-custom-gradient justify-center items-center min-h-screen">
       <Card className="w-[380px]">
@@ -97,7 +126,6 @@ export default function ForgotPassword() {
               {serverError && (
                 <p className="text-red-500 text-sm mt-2">{serverError}</p>
               )}
-              {/* <Button type="submit">Register</Button> */}
               <Button
                 className="bg-blue-500 hover:bg-blue-500"
                 type="submit"
