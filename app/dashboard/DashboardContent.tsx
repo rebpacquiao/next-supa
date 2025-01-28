@@ -66,16 +66,16 @@ export default function DashboardContent() {
     fetchTasks();
   }, [page, rowsPerPage]);
 
-  const handleClickOpen = () => {
+  const addNewPost = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const closeTasks = () => {
     setOpen(false);
     setEditTask(null);
   };
 
-  const handleCreateTask = async () => {
+  const initCreateTasks = async () => {
     setLoading(true);
     if (editTask) {
       const updatedTask = await updatePost(editTask.id, description, tags);
@@ -96,33 +96,33 @@ export default function DashboardContent() {
     setAlertOpen(true);
   };
 
-  const handleEditTask = (task: Task) => {
+  const initEditTask = (task: Task) => {
     setEditTask(task);
     setDescription(task.title);
     setTags(task.tags || []);
     setOpen(true);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const initChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
+  const initChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const handleTagChange = (event: SelectChangeEvent<string[]>) => {
+  const initChangeTag = (event: SelectChangeEvent<string[]>) => {
     setTags(event.target.value as string[]);
   };
 
-  const handleAlertClose = () => {
+  const closeAlert = () => {
     setAlertOpen(false);
   };
 
-  const handleSearch = async (query: string) => {
+  const initSearchTitle = async (query: string) => {
     setLoading(true);
     if (query) {
       try {
@@ -146,16 +146,12 @@ export default function DashboardContent() {
         <div className="container px-6 py-8 mx-auto">
           <div className="flex justify-between items-center">
             <h3 className="text-3xl font-medium text-gray-700">Dashboard</h3>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleClickOpen}
-            >
+            <Button variant="contained" color="primary" onClick={addNewPost}>
               {editTask ? "Edit Post" : "Add Post"}
             </Button>
           </div>
 
-          <SearchComponent onSearch={handleSearch} />
+          <SearchComponent onSearch={initSearchTitle} />
 
           <div className="flex flex-col mt-8">
             <TableContainer component={Paper}>
@@ -181,9 +177,7 @@ export default function DashboardContent() {
                       </TableCell>
                       <TableCell>{task.views}</TableCell>
                       <TableCell>
-                        <Button onClick={() => handleEditTask(task)}>
-                          Edit
-                        </Button>
+                        <Button onClick={() => initEditTask(task)}>Edit</Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -195,14 +189,14 @@ export default function DashboardContent() {
                 count={totalTasks}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                onPageChange={initChangePage}
+                onRowsPerPageChange={initChangeRowsPerPage}
               />
             </TableContainer>
           </div>
         </div>
       </main>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={closeTasks}>
         <DialogTitle>{editTask ? "Edit Task" : "Add Task"}</DialogTitle>
         <DialogContent>
           <TextField
@@ -219,7 +213,7 @@ export default function DashboardContent() {
             <Select
               multiple
               value={tags}
-              onChange={handleTagChange}
+              onChange={initChangeTag}
               renderValue={(selected) => (
                 <div>
                   {(selected as string[]).map((value) => (
@@ -237,10 +231,10 @@ export default function DashboardContent() {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={closeTasks} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCreateTask} color="primary">
+          <Button onClick={initCreateTasks} color="primary">
             {editTask ? "Update" : "Create"}
           </Button>
         </DialogActions>
@@ -248,7 +242,7 @@ export default function DashboardContent() {
       <Snackbar
         open={alertOpen}
         autoHideDuration={6000}
-        onClose={handleAlertClose}
+        onClose={closeAlert}
         message={
           editTask ? "Successfully updated post" : "Successfully created post"
         }
