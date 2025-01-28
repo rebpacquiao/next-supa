@@ -36,3 +36,13 @@ export const getTasks = async (limit = 10, skip = 0) => {
     throw error;
   }
 };
+
+export const searchPosts = async (query: string) => {
+  try {
+    const response = await axios.get(`${API_URL}/search?q=${query}`);
+    return response.data.posts;
+  } catch (error) {
+    console.error("Error searching posts:", error);
+    throw error;
+  }
+};

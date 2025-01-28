@@ -16,22 +16,39 @@ import {
   TableRow,
   Paper,
   TablePagination,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Chip,
+  SelectChangeEvent,
+  Snackbar,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
-import { createTask, getTasks } from "../../services/task";
+import { createTask, getTasks, searchPosts } from "../../services/task";
+import SearchComponent from "./SearchComponent";
 
 interface Task {
   id: number;
   title: string;
-  completed?: boolean;
+  body?: string;
+  views?: number;
+  tags?: string[];
 }
+
+const availableTags = ["history", "american", "crime", "science", "technology"];
 
 export default function DashboardContent() {
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalTasks, setTotalTasks] = useState(0);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -51,10 +68,15 @@ export default function DashboardContent() {
   };
 
   const handleCreateTask = async () => {
+    setLoading(true);
     const newTask = await createTask(description);
+    newTask.tags = tags;
     setOpen(false);
     setTasks((prevTasks) => [newTask, ...prevTasks]);
     setDescription("");
+    setTags([]);
+    setLoading(false);
+    setAlertOpen(true);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -68,6 +90,26 @@ export default function DashboardContent() {
     setPage(0);
   };
 
+  const handleTagChange = (event: SelectChangeEvent<string[]>) => {
+    setTags(event.target.value as string[]);
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
+  const handleSearch = async (query: string) => {
+    setLoading(true);
+    try {
+      const posts = await searchPosts(query);
+      setTasks(posts);
+      setTotalTasks(posts.length);
+    } catch (error) {
+      console.error("Error searching posts:", error);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
@@ -79,9 +121,11 @@ export default function DashboardContent() {
               color="primary"
               onClick={handleClickOpen}
             >
-              Add Task
+              Add Post
             </Button>
           </div>
+
+          <SearchComponent onSearch={handleSearch} />
 
           <div className="flex flex-col mt-8">
             <TableContainer component={Paper}>
@@ -89,14 +133,16 @@ export default function DashboardContent() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Title</TableCell>
-                    <TableCell>Completed</TableCell>
+                    <TableCell>Tags</TableCell>
+                    <TableCell>Views</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {tasks.map((task) => (
                     <TableRow key={task.id}>
                       <TableCell>{task.title}</TableCell>
-                      <TableCell>{task.completed ? "Yes" : "No"}</TableCell>
+                      <TableCell>{task.tags?.join(", ")}</TableCell>
+                      <TableCell>{task.views}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -126,6 +172,27 @@ export default function DashboardContent() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Tags</InputLabel>
+            <Select
+              multiple
+              value={tags}
+              onChange={handleTagChange}
+              renderValue={(selected) => (
+                <div>
+                  {(selected as string[]).map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </div>
+              )}
+            >
+              {availableTags.map((tag) => (
+                <MenuItem key={tag} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
@@ -136,6 +203,18 @@ export default function DashboardContent() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={handleAlertClose}
+        message="Successfully created post"
+      />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }
