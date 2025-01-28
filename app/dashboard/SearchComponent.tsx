@@ -11,7 +11,7 @@ export default function SearchComponent({ onSearch }: SearchComponentProps) {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = async () => {
+  const initSearchTitle = async () => {
     setLoading(true);
     await onSearch(query);
     setLoading(false);
@@ -29,7 +29,7 @@ export default function SearchComponent({ onSearch }: SearchComponentProps) {
               onChange={(e) => setQuery(e.target.value)}
             />
             <button
-              onClick={handleSearch}
+              onClick={initSearchTitle}
               disabled={loading}
               className="absolute top-1 right-1 flex items-center rounded bg-slate-800 py-1 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
               type="button"
