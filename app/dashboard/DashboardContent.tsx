@@ -25,8 +25,14 @@ import {
   Snackbar,
   CircularProgress,
   Backdrop,
+  Stack,
 } from "@mui/material";
-import { createTask, getTasks, searchPosts } from "../../services/task";
+import {
+  createTask,
+  getTasks,
+  searchPosts,
+  updatePost,
+} from "../../services/task";
 import SearchComponent from "./SearchComponent";
 
 interface Task {
@@ -49,6 +55,7 @@ export default function DashboardContent() {
   const [totalTasks, setTotalTasks] = useState(0);
   const [alertOpen, setAlertOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [editTask, setEditTask] = useState<Task | null>(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -65,18 +72,35 @@ export default function DashboardContent() {
 
   const handleClose = () => {
     setOpen(false);
+    setEditTask(null);
   };
 
   const handleCreateTask = async () => {
     setLoading(true);
-    const newTask = await createTask(description);
-    newTask.tags = tags;
+    if (editTask) {
+      const updatedTask = await updatePost(editTask.id, description, tags);
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task
+        )
+      );
+    } else {
+      const newTask = await createTask(description);
+      newTask.tags = tags;
+      setTasks((prevTasks) => [newTask, ...prevTasks]);
+    }
     setOpen(false);
-    setTasks((prevTasks) => [newTask, ...prevTasks]);
     setDescription("");
     setTags([]);
     setLoading(false);
     setAlertOpen(true);
+  };
+
+  const handleEditTask = (task: Task) => {
+    setEditTask(task);
+    setDescription(task.title);
+    setTags(task.tags || []);
+    setOpen(true);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -100,12 +124,18 @@ export default function DashboardContent() {
 
   const handleSearch = async (query: string) => {
     setLoading(true);
-    try {
-      const posts = await searchPosts(query);
-      setTasks(posts);
-      setTotalTasks(posts.length);
-    } catch (error) {
-      console.error("Error searching posts:", error);
+    if (query) {
+      try {
+        const posts = await searchPosts(query);
+        setTasks(posts);
+        setTotalTasks(posts.length);
+      } catch (error) {
+        console.error("Error searching posts:", error);
+      }
+    } else {
+      const data = await getTasks(rowsPerPage, page * rowsPerPage);
+      setTasks(data.posts);
+      setTotalTasks(data.total);
     }
     setLoading(false);
   };
@@ -121,7 +151,7 @@ export default function DashboardContent() {
               color="primary"
               onClick={handleClickOpen}
             >
-              Add Post
+              {editTask ? "Edit Post" : "Add Post"}
             </Button>
           </div>
 
@@ -135,14 +165,26 @@ export default function DashboardContent() {
                     <TableCell>Title</TableCell>
                     <TableCell>Tags</TableCell>
                     <TableCell>Views</TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {tasks.map((task) => (
                     <TableRow key={task.id}>
                       <TableCell>{task.title}</TableCell>
-                      <TableCell>{task.tags?.join(", ")}</TableCell>
+                      <TableCell>
+                        <Stack direction="row" spacing={1}>
+                          {task.tags?.map((tag) => (
+                            <Chip color="success" key={tag} label={tag} />
+                          ))}
+                        </Stack>
+                      </TableCell>
                       <TableCell>{task.views}</TableCell>
+                      <TableCell>
+                        <Button onClick={() => handleEditTask(task)}>
+                          Edit
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -161,7 +203,7 @@ export default function DashboardContent() {
         </div>
       </main>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add Task</DialogTitle>
+        <DialogTitle>{editTask ? "Edit Task" : "Add Task"}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -199,7 +241,7 @@ export default function DashboardContent() {
             Cancel
           </Button>
           <Button onClick={handleCreateTask} color="primary">
-            Create
+            {editTask ? "Update" : "Create"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -207,7 +249,9 @@ export default function DashboardContent() {
         open={alertOpen}
         autoHideDuration={6000}
         onClose={handleAlertClose}
-        message="Successfully created post"
+        message={
+          editTask ? "Successfully updated post" : "Successfully created post"
+        }
       />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

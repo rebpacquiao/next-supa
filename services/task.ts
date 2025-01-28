@@ -46,3 +46,24 @@ export const searchPosts = async (query: string) => {
     throw error;
   }
 };
+
+export const updatePost = async (id: number, title: string, tags: string[]) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/${id}`,
+      {
+        title,
+        tags,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating post:", error);
+    throw error;
+  }
+};

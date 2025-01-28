@@ -19,7 +19,7 @@ export default function SearchComponent({ onSearch }: SearchComponentProps) {
 
   return (
     <Box>
-      <div className="bg-white rounded-md p-4 flex items-center justify-between mt-8">
+      <div className="bg-white rounded-md p-1 flex items-center justify-between mt-8">
         <div className="w-full ">
           <div className="relative">
             <input
