@@ -17,24 +17,19 @@ export default function RecipesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const fetchRecipes = async () => {
+    setLoading(true);
+    const data = await getRecipes();
+    setRecipes(data.recipes);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    async function fetchRecipes() {
-      setLoading(true);
-      const data = await getRecipes();
-      setRecipes(data.recipes);
-      setLoading(false);
-    }
     fetchRecipes();
   }, []);
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
-      async function fetchRecipes() {
-        setLoading(true);
-        const data = await getRecipes();
-        setRecipes(data.recipes);
-        setLoading(false);
-      }
       fetchRecipes();
     }
   }, [searchQuery]);
