@@ -101,7 +101,7 @@ export default function RecipesPage() {
             <div className="loader"></div>
           </div>
         ) : (
-          <div className="flex flex-wrap justify-between p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
             {recipes.map((recipe) => (
               <div
                 key={recipe.id}
