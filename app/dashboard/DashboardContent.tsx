@@ -61,6 +61,7 @@ export default function DashboardContent() {
   const [loading, setLoading] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [deleteTask, setDeleteTask] = useState<Task | null>(null);
+  const [userEmail, setUserEmail] = useState("user@example.com"); // Replace with actual user email
 
   useEffect(() => {
     const fetchTasks = async () => {

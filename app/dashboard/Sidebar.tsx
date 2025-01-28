@@ -25,7 +25,9 @@ export default function Sidebar() {
             ></path>
           </svg>
 
-          <span className="mx-2 text-2xl font-semibold text-white">Menu</span>
+          <span className="mx-2 text-2xl font-semibold text-white">
+            Reb Demo
+          </span>
         </div>
       </div>
 
